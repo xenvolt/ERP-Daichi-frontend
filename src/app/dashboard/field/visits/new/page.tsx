@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2, MapPin } from "lucide-react";
-import { PhotoCaptureField } from "@/components/shared/PhotoCaptureField";
 
 interface DealerOption {
   id: string;
@@ -30,7 +29,6 @@ export default function NewVisitPage() {
   const [dealers, setDealers] = useState<DealerOption[]>([]);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
-  const [odometerPhoto, setOdometerPhoto] = useState<string | null>(null);
   const [form, setForm] = useState({
     dealerId: "",
     prospectName: "",
@@ -93,7 +91,6 @@ export default function NewVisitPage() {
           latitude: location?.lat,
           longitude: location?.lng,
           locationLabel: location ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}` : null,
-          odometerPhoto,
         }),
       });
       if (res.ok) router.push("/dashboard/field/history");
@@ -162,12 +159,6 @@ export default function NewVisitPage() {
               <Label htmlFor="next">Next action</Label>
               <Input id="next" className="h-12" value={form.nextAction} onChange={(e) => setForm({ ...form, nextAction: e.target.value })} />
             </div>
-            <PhotoCaptureField
-              label="Site / odometer photo"
-              hint="Optional — take a site photo or odometer reading for verification"
-              value={odometerPhoto}
-              onChange={setOdometerPhoto}
-            />
             <Button type="button" variant="outline" className="h-12 w-full" onClick={captureLocation} disabled={locating}>
               <MapPin className="mr-2 h-5 w-5" />
               {location ? "Location captured ✓" : locating ? "Getting GPS..." : "Capture my location"}

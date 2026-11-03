@@ -114,16 +114,6 @@ export function PhotoCaptureField({
             </Button>
             <Button
               type="button"
-              variant="outline"
-              size="sm"
-              className="h-10"
-              onClick={() => uploadInputRef.current?.click()}
-            >
-              <ImagePlus className="mr-2 h-4 w-4" />
-              Replace
-            </Button>
-            <Button
-              type="button"
               variant="ghost"
               size="sm"
               className="h-10 text-destructive hover:text-destructive"

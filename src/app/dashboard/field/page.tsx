@@ -3,30 +3,23 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, NotebookPen, ClipboardCheck, Users, ClipboardList, Sunset, Radio } from "lucide-react";
+import { MapPin, ClipboardCheck, Users, ClipboardList, Sunset, Radio } from "lucide-react";
 import { TrackingBanner } from "@/components/field/TrackingBanner";
 
 const actions = [
   {
     title: "Daily Activity Report",
-    description: "Start-of-day plan: places, targets, demos",
+    description: "Places, sales target, collection target, opening odometer",
     href: "/dashboard/field/activity",
     icon: ClipboardList,
     color: "bg-blue-50 text-blue-700 border-blue-100",
   },
   {
     title: "Daily Closing Report",
-    description: "End-of-day actuals vs today's plan",
+    description: "Places visited, sales, collection, closing odometer",
     href: "/dashboard/field/closing",
     icon: Sunset,
     color: "bg-orange-50 text-orange-700 border-orange-100",
-  },
-  {
-    title: "Daily work log",
-    description: "Optional visit/travel notes",
-    href: "/dashboard/field/daily-log",
-    icon: NotebookPen,
-    color: "bg-slate-50 text-slate-700 border-slate-200",
   },
   {
     title: "Dealer visit",
@@ -67,7 +60,7 @@ export default function FieldHubPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 pb-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Field work</h1>
+        <h1 className="text-2xl sm:text-2xl font-bold tracking-tight">Field work</h1>
         <p className="mt-1 text-base sm:text-lg text-muted-foreground">
           Hello {session?.user?.name?.split(" ")[0] || "there"} — tap what you need today
         </p>

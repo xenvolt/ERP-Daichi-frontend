@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { BarChart3, FileText, Users, ShoppingCart, IndianRupee, MapPinned, Mail } from "lucide-react";
+import { BarChart3, Users } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { apiFetch } from "@/lib/api";
@@ -25,46 +25,11 @@ const reports = [
     color: "bg-blue-100 text-blue-600",
   },
   {
-    title: "Aging Report",
-    description: "Outstanding payments by aging buckets",
-    icon: IndianRupee,
-    href: "/dashboard/reports/aging",
-    color: "bg-red-100 text-red-600",
-  },
-  {
-    title: "Product Analysis",
-    description: "Top products by revenue and quantity",
-    icon: ShoppingCart,
-    href: "/dashboard/reports/products",
-    color: "bg-purple-100 text-purple-600",
-  },
-  {
     title: "Dealer Performance",
     description: "Top dealers and outstanding balances",
     icon: Users,
     href: "/dashboard/reports/dealers",
     color: "bg-green-100 text-green-600",
-  },
-  {
-    title: "Daily sales reports",
-    description: "Plan vs actual, missing reports, CSV export",
-    icon: MapPinned,
-    href: "/dashboard/reports/field",
-    color: "bg-teal-100 text-teal-700",
-  },
-  {
-    title: "Email a report",
-    description: "Send any report to the founder",
-    icon: Mail,
-    href: "/dashboard/settings/email",
-    color: "bg-indigo-100 text-indigo-600",
-  },
-  {
-    title: "Order Summary",
-    description: "View all orders with filters",
-    icon: FileText,
-    href: "/dashboard/orders",
-    color: "bg-orange-100 text-orange-600",
   },
 ];
 
@@ -76,7 +41,6 @@ export default function ReportsPage() {
     overdueInvoices: number;
   } | null>(null);
   const [analytics, setAnalytics] = useState<{
-    topProducts: Array<{ productName: string; revenue: number; quantity: number }>;
     topDealers: Array<{ dealerName: string; revenue: number; invoiceCount: number }>;
   } | null>(null);
 
@@ -91,7 +55,6 @@ export default function ReportsPage() {
       .then((data) => {
         if (!data) return setAnalytics(null);
         setAnalytics({
-          topProducts: data.topProducts || [],
           topDealers: data.topDealers || [],
         });
       })
@@ -101,11 +64,11 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Reports</h1>
+        <h1 className="text-2xl font-bold">Reports</h1>
         <p className="text-muted-foreground">Business reports and performance analytics</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         {reports.map((report) => (
           <Card key={report.title} className="transition-shadow hover:shadow-lg">
             <CardHeader>
@@ -152,42 +115,7 @@ export default function ReportsPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Top products</CardTitle>
-            <Button variant="link" asChild className="h-auto p-0">
-              <Link href="/dashboard/reports/products">View all</Link>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            {!analytics?.topProducts?.length ? (
-              <p className="text-sm text-muted-foreground">No product sales this month.</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead className="text-right">Qty</TableHead>
-                    <TableHead className="text-right">Revenue</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {analytics.topProducts.map((p, i) => (
-                    <TableRow key={`${p.productName}-${i}`}>
-                      <TableCell className="font-medium">{p.productName}</TableCell>
-                      <TableCell className="text-right tabular-nums">{p.quantity}</TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        {formatCurrency(p.revenue)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Top dealers</CardTitle>

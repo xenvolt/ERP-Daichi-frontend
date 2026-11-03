@@ -27,7 +27,6 @@ function Detail({ label, value }: { label: string; value?: string | number | nul
 
 export default function FieldHistoryPage() {
   const [reports, setReports] = useState<any[]>([]);
-  const [logs, setLogs] = useState<any[]>([]);
   const [visits, setVisits] = useState<any[]>([]);
   const [tracks, setTracks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,14 +35,12 @@ export default function FieldHistoryPage() {
     let cancelled = false;
     Promise.all([
       apiFetchJsonArray("/api/daily-reports"),
-      apiFetchJsonArray("/api/daily-logs"),
       apiFetchJsonArray("/api/visits"),
       apiFetchJsonArray("/api/location"),
     ])
-      .then(([r, l, v, t]) => {
+      .then(([r, v, t]) => {
         if (cancelled) return;
         setReports(r);
-        setLogs(l);
         setVisits(v);
         setTracks(t);
       })
@@ -59,7 +56,7 @@ export default function FieldHistoryPage() {
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">My field history</h1>
-        <p className="text-muted-foreground">Plans, closings, visits, and GPS — kept date-wise</p>
+        <p className="text-muted-foreground">Plans, closings, visits, and GPS</p>
       </div>
 
       {loading ? (
@@ -68,9 +65,8 @@ export default function FieldHistoryPage() {
         </div>
       ) : (
         <Tabs defaultValue="reports">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="reports">Reports ({reports.length})</TabsTrigger>
-            <TabsTrigger value="logs">Logs ({logs.length})</TabsTrigger>
             <TabsTrigger value="visits">Visits ({visits.length})</TabsTrigger>
             <TabsTrigger value="location">GPS ({tracks.length})</TabsTrigger>
           </TabsList>
@@ -108,24 +104,6 @@ export default function FieldHistoryPage() {
                         <p className="text-xs text-muted-foreground">Closed {formatDateTime(rep.closing.submittedAt)}</p>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </TabsContent>
-
-          <TabsContent value="logs" className="mt-4 space-y-3">
-            {logs.length === 0 ? (
-              <p className="py-8 text-center text-muted-foreground">No daily logs yet.</p>
-            ) : (
-              logs.map((log) => (
-                <Card key={log.id || log._id}>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{formatDate(log.logDate)}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-1 text-sm">
-                    <p>{log.summary}</p>
-                    <Detail label="Dealers visited" value={log.dealersVisited} />
                   </CardContent>
                 </Card>
               ))

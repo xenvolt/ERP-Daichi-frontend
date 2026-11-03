@@ -54,7 +54,7 @@ export default function SalesReportPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-            <h1 className="text-3xl font-bold">Sales Report</h1>
+            <h1 className="text-2xl font-bold">Sales Report</h1>
             <p className="text-muted-foreground">Zone-wise sales from live orders</p>
           </div>
         <Button variant="outline" onClick={exportCsv} disabled={salesData.length === 0}>
@@ -67,13 +67,13 @@ export default function SalesReportPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground">Total Orders (MTD)</p>
-            <p className="text-3xl font-bold">{loading ? "…" : totalOrders}</p>
+            <p className="text-2xl font-bold">{loading ? "…" : totalOrders}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <p className="text-sm text-muted-foreground">Total Revenue (MTD)</p>
-            <p className="text-3xl font-bold">{loading ? "…" : formatCurrency(totalRevenue)}</p>
+            <p className="text-2xl font-bold">{loading ? "…" : formatCurrency(totalRevenue)}</p>
           </CardContent>
         </Card>
       </div>

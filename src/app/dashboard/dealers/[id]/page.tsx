@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -53,6 +54,8 @@ interface DaichiDealerDetail {
 
 export default function DealerDetailPage() {
   const params = useParams();
+  const { data: session, status: sessionStatus } = useSession();
+  const showDocuments = session?.user?.role !== "SALES_MARKETING";
   const [dealer, setDealer] = useState<DaichiDealerDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [previewUrls, setPreviewUrls] = useState<
@@ -75,7 +78,6 @@ export default function DealerDetailPage() {
       if (res.ok) {
         const data = await res.json();
         setDealer(data);
-        loadPreviewUrls(String(params.id));
       }
     } catch (error) {
       console.error("Failed to fetch dealer:", error);
@@ -83,6 +85,13 @@ export default function DealerDetailPage() {
       setLoading(false);
     }
   };
+
+  // Previews are only needed by roles that can see the Documents card.
+  useEffect(() => {
+    if (dealer && sessionStatus === "authenticated" && showDocuments) {
+      loadPreviewUrls(String(params.id));
+    }
+  }, [dealer?.externalId, sessionStatus, showDocuments]);
 
   const loadPreviewUrls = async (externalId: string) => {
     setLoadingPreviews(true);
@@ -288,7 +297,7 @@ export default function DealerDetailPage() {
       <div className="flex items-center justify-between">
         <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">{dealer.firmName || "Unnamed Dealer"}</h1>
+              <h1 className="text-2xl font-bold">{dealer.firmName || "Unnamed Dealer"}</h1>
               <StatusBadge status={dealer.syncStatus} />
               <GradeBadge
                 grade={dealer.dealerGrade || gradeFromCreditLimit(dealer.creditLimit)}
@@ -436,6 +445,7 @@ export default function DealerDetailPage() {
             </CardContent>
           </Card>
 
+          {showDocuments && (
           <Card>
             <CardHeader>
               <CardTitle>Documents</CardTitle>
@@ -536,21 +546,6 @@ export default function DealerDetailPage() {
                                     ? "Preview PDF"
                                     : "Open"}
                             </Button>
-                            <label className="inline-flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-muted">
-                              <input
-                                type="file"
-                                accept="image/*,.pdf,application/pdf"
-                                className="hidden"
-                                disabled={uploadingDoc === doc.docType}
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0] || null;
-                                  e.target.value = "";
-                                  void handleUploadMissingDoc(doc.docType, file);
-                                }}
-                              />
-                              <Upload className="h-3.5 w-3.5" />
-                              {uploadingDoc === doc.docType ? "Uploading..." : "Replace"}
-                            </label>
                           </>
                         ) : (
                           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-muted">
@@ -576,6 +571,7 @@ export default function DealerDetailPage() {
               )}
             </CardContent>
           </Card>
+          )}
 
           {previewImage && (
             <div

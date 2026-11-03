@@ -17,7 +17,6 @@ import {
   CreditCard,
   Receipt,
   BarChart3,
-  Settings,
   Sprout,
   ClipboardList,
   MapPinned,
@@ -47,7 +46,6 @@ const navigation = [
   { name: "Approvals", href: "/dashboard/approvals", icon: ClipboardList, roles: ["MANAGEMENT_ADMIN"] },
   { name: "Users", href: "/dashboard/settings/users", icon: UserCog, roles: ["MANAGEMENT_ADMIN"] },
   { name: "Send report", href: "/dashboard/settings/email", icon: Mail, roles: ["MANAGEMENT_ADMIN"] },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["MANAGEMENT_ADMIN"] },
 ];
 
 function pathMatches(pathname: string | null, href: string) {

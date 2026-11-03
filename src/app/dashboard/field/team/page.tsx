@@ -67,7 +67,7 @@ export default function TeamFieldPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Team field activity</h1>
+          <h1 className="text-2xl font-bold">Team field activity</h1>
           <p className="text-muted-foreground">Daily plans vs actuals, visits, and GPS</p>
         </div>
       </div>

@@ -214,7 +214,7 @@ export default function PaymentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
           <p className="text-muted-foreground">Record and track dealer payments</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -20,7 +20,6 @@ import {
   Truck,
   FileText,
   BarChart3,
-  Settings,
   Warehouse,
   CreditCard,
   Receipt,
@@ -260,12 +259,10 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
-        <p className="mt-1 text-muted-foreground">
-          {role === "MANAGEMENT_ADMIN"
-            ? "Overall business status — detailed modules are managed by other roles"
-            : "Overview of your business operations"}
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        {role !== "MANAGEMENT_ADMIN" && (
+          <p className="mt-1 text-muted-foreground">Overview of your business operations</p>
+        )}
       </div>
 
       {role === "MANAGEMENT_ADMIN" && stats && (
@@ -611,12 +608,6 @@ export default function DashboardPage() {
                     <Link href="/dashboard/orders">
                       <ShoppingCart className="h-5 w-5" />
                       <span className="text-xs font-medium">Orders</span>
-                    </Link>
-                  </Button>
-                  <Button variant="outline" className="h-20 flex-col gap-2" asChild>
-                    <Link href="/dashboard/settings">
-                      <Settings className="h-5 w-5" />
-                      <span className="text-xs font-medium">Settings</span>
                     </Link>
                   </Button>
                 </>

@@ -169,20 +169,14 @@ export default function DealersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dealers</h1>
+          <h1 className="text-2xl font-bold">Dealers</h1>
           <p className="text-muted-foreground">
             {syncStatus?.totalDealers ?? dealers.length} dealers in ERP
-            {syncStatus?.remoteCount != null && syncStatus.remoteCount !== syncStatus.totalDealers && (
-              <span className="ml-1 text-amber-700">
-                ({syncStatus.pendingSync ?? 0} syncing from dealer form…)
-              </span>
-            )}
             {syncStatus?.lastSync && (
               <span className="ml-2 text-xs">
                 (Last sync: {formatDate(syncStatus.lastSync.finishedAt)})
               </span>
             )}
-            <span className="ml-2 text-xs text-green-700">• Auto-refresh every 60s</span>
           </p>
         </div>
         <div className="flex gap-2">

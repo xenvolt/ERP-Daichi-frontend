@@ -3,56 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Loader2, MapPin } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
-import { PhotoCaptureField } from "@/components/shared/PhotoCaptureField";
 
 export default function DailyLogPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [locating, setLocating] = useState(false);
   const [done, setDone] = useState(false);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [odometerPhoto, setOdometerPhoto] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    summary: "",
-    dealersVisited: "0",
-    ordersDiscussed: "0",
-    openingKm: "",
-    closingKm: "",
-    salesAmount: "",
-    collectionAmount: "",
-    newDealersAppointed: "0",
-    achievementNotes: "",
-  });
-
-  const distanceTraveled =
-    form.openingKm !== "" && form.closingKm !== ""
-      ? Math.max(0, Number(form.closingKm) - Number(form.openingKm))
-      : null;
-
-  const captureLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Location not supported on this device.");
-      return;
-    }
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setLocating(false);
-      },
-      () => {
-        alert("Could not get location. Allow GPS in browser settings.");
-        setLocating(false);
-      },
-      { enableHighAccuracy: true, timeout: 15000 }
-    );
-  };
+  const [summary, setSummary] = useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,20 +24,7 @@ export default function DailyLogPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           logDate: new Date().toISOString(),
-          summary: form.summary,
-          dealersVisited: parseInt(form.dealersVisited, 10) || 0,
-          ordersDiscussed: parseInt(form.ordersDiscussed, 10) || 0,
-          openingKm: form.openingKm ? parseFloat(form.openingKm) : null,
-          closingKm: form.closingKm ? parseFloat(form.closingKm) : null,
-          kilometersTraveled: distanceTraveled,
-          salesAmount: form.salesAmount ? parseFloat(form.salesAmount) : null,
-          collectionAmount: form.collectionAmount ? parseFloat(form.collectionAmount) : null,
-          newDealersAppointed: parseInt(form.newDealersAppointed, 10) || 0,
-          achievementNotes: form.achievementNotes || null,
-          odometerPhoto,
-          latitude: location?.lat,
-          longitude: location?.lng,
-          locationLabel: location ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}` : null,
+          summary,
         }),
       });
       if (res.ok) {
@@ -117,72 +65,16 @@ export default function DailyLogPage() {
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="summary">Summary *</Label>
+              <Label htmlFor="summary">Note *</Label>
               <Textarea
                 id="summary"
                 required
                 rows={4}
                 className="text-base min-h-[100px]"
-                placeholder="e.g. Visited 3 dealers in Pune, discussed NPK orders..."
-                value={form.summary}
-                onChange={(e) => setForm({ ...form, summary: e.target.value })}
+                placeholder="Anything that is not already in the plan, closing report, or a dealer visit"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
               />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="dealers">Dealers visited</Label>
-                <Input id="dealers" type="number" min={0} className="h-12 text-lg" value={form.dealersVisited} onChange={(e) => setForm({ ...form, dealersVisited: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="orders">Orders discussed</Label>
-                <Input id="orders" type="number" min={0} className="h-12 text-lg" value={form.ordersDiscussed} onChange={(e) => setForm({ ...form, ordersDiscussed: e.target.value })} />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="openingKm">Opening KM *</Label>
-                <Input id="openingKm" type="number" min={0} step="0.1" required className="h-12 text-lg" placeholder="Start reading" value={form.openingKm} onChange={(e) => setForm({ ...form, openingKm: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="closingKm">Closing KM *</Label>
-                <Input id="closingKm" type="number" min={0} step="0.1" required className="h-12 text-lg" placeholder="End reading" value={form.closingKm} onChange={(e) => setForm({ ...form, closingKm: e.target.value })} />
-              </div>
-            </div>
-            {distanceTraveled !== null && (
-              <p className="text-sm font-medium text-brand-700">
-                Distance traveled today: {distanceTraveled} km
-              </p>
-            )}
-            <PhotoCaptureField
-              label="Odometer photo (for verification)"
-              hint="Take a clear photo of your odometer reading or upload from gallery"
-              value={odometerPhoto}
-              onChange={setOdometerPhoto}
-            />
-            <Button type="button" variant="outline" className="h-12 w-full" onClick={captureLocation} disabled={locating}>
-              <MapPin className="mr-2 h-5 w-5" />
-              {location ? "Location captured ✓" : locating ? "Getting GPS..." : "Capture my location"}
-            </Button>
-            <div className="space-y-4 rounded-lg border bg-slate-50 p-4">
-              <p className="text-sm font-semibold text-slate-700">Daily Achievement Report</p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="salesAmount">Sales booked (₹)</Label>
-                  <Input id="salesAmount" type="number" min={0} step="0.01" className="h-12 text-lg" placeholder="0" value={form.salesAmount} onChange={(e) => setForm({ ...form, salesAmount: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="collectionAmount">Collection (₹)</Label>
-                  <Input id="collectionAmount" type="number" min={0} step="0.01" className="h-12 text-lg" placeholder="0" value={form.collectionAmount} onChange={(e) => setForm({ ...form, collectionAmount: e.target.value })} />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="newDealers">New dealers appointed</Label>
-                <Input id="newDealers" type="number" min={0} className="h-12 text-lg" value={form.newDealersAppointed} onChange={(e) => setForm({ ...form, newDealersAppointed: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="achievementNotes">Achievements / highlights</Label>
-                <Textarea id="achievementNotes" rows={3} className="text-base" placeholder="Key achievements, closures, targets met..." value={form.achievementNotes} onChange={(e) => setForm({ ...form, achievementNotes: e.target.value })} />
-              </div>
             </div>
             <Button type="submit" size="lg" className="h-14 w-full text-lg" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}

@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Printer, Mail, Loader2 } from "lucide-react";
+import { ArrowLeft, Printer, Mail, Loader2, CheckCircle } from "lucide-react";
 
 export default function PrintInvoicePage() {
   const params = useParams();
@@ -35,6 +35,7 @@ export default function PrintInvoicePage() {
   const [emailSending, setEmailSending] = useState(false);
   const [emailMsg, setEmailMsg] = useState<string | null>(null);
   const [emailForm, setEmailForm] = useState({ to: "", cc: "", message: "" });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -89,6 +90,23 @@ export default function PrintInvoicePage() {
     }
   };
 
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const res = await apiFetch(`/api/invoices/${params.id}/finalize`, { method: "POST" });
+      if (res.ok) {
+        router.push(invoicesHref);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.error || "Could not submit invoice. Check stock.");
+      }
+    } catch {
+      alert("Network error.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
@@ -124,10 +142,20 @@ export default function PrintInvoicePage() {
             Send invoice by email
           </Button>
           )}
-          <Button size="sm" onClick={() => window.print()}>
+          <Button variant="outline" size="sm" onClick={() => window.print()}>
             <Printer className="mr-2 h-4 w-4" />
             Print
           </Button>
+          {canEmail && invoice.status === "DRAFT" && (
+            <Button size="sm" onClick={handleSubmit} disabled={submitting}>
+              {submitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle className="mr-2 h-4 w-4" />
+              )}
+              Submit
+            </Button>
+          )}
         </div>
       </div>
 

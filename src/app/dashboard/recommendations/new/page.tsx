@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Save, Plus, X } from "lucide-react";
+import { Loader2, Save, Plus, X, Sparkles } from "lucide-react";
+import { suggestProducts } from "@/lib/product-recommendations";
 import { Badge } from "@/components/ui/badge";
 
 interface Product {
@@ -68,6 +69,23 @@ export default function NewRecommendationPage() {
     }
   };
 
+  const suggestions = useMemo(
+    () =>
+      suggestProducts(formData, products).filter(
+        (s) => !selectedProducts.some((p) => p.productId === s.productId)
+      ),
+    [formData, products, selectedProducts]
+  );
+
+  const addSuggestions = (items: typeof suggestions) => {
+    setSelectedProducts((current) => [
+      ...current,
+      ...items
+        .filter((s) => !current.some((p) => p.productId === s.productId))
+        .map((s) => ({ productId: s.productId, reason: s.reason })),
+    ]);
+  };
+
   const removeProduct = (productId: string) => {
     setSelectedProducts(selectedProducts.filter((p) => p.productId !== productId));
   };
@@ -105,7 +123,7 @@ export default function NewRecommendationPage() {
   return (
     <div className="space-y-6">
       <div>
-          <h1 className="text-3xl font-bold">New Sales Promotion Activity</h1>
+          <h1 className="text-2xl font-bold">New Sales Promotion Activity</h1>
           <p className="text-muted-foreground">
             Log a recommendation, field work, demo, farmer meeting or campaign
           </p>
@@ -297,9 +315,42 @@ export default function NewRecommendationPage() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle>Recommended Products</CardTitle>
-              <CardDescription>Select products to recommend</CardDescription>
+              <CardDescription>Suggested automatically from the issue and symptoms — or add your own</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {suggestions.length > 0 ? (
+                <div className="rounded-lg border border-brand-200 bg-brand-50/60 p-3">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-sm font-medium">
+                      <Sparkles className="h-4 w-4 text-brand-600" />
+                      Suggested for this issue
+                    </p>
+                    <Button type="button" size="sm" variant="outline" onClick={() => addSuggestions(suggestions)}>
+                      <Plus className="mr-1 h-3.5 w-3.5" />
+                      Add all
+                    </Button>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {suggestions.map((s) => (
+                      <li key={s.productId} className="flex items-center justify-between gap-2 text-sm">
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{s.name}</p>
+                          <p className="truncate text-xs text-muted-foreground">{s.reason}</p>
+                        </div>
+                        <Button type="button" size="sm" variant="ghost" onClick={() => addSuggestions([s])}>
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                !selectedProducts.length && (
+                  <p className="text-sm text-muted-foreground">
+                    Pick an issue type and describe the symptoms to get product suggestions.
+                  </p>
+                )
+              )}
               <div className="flex gap-2">
                 <Select onValueChange={addProduct}>
                   <SelectTrigger className="flex-1">

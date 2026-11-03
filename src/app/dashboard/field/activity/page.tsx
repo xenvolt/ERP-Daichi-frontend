@@ -26,9 +26,6 @@ export default function DailyActivityPage() {
   const [placesToVisit, setPlacesToVisit] = useState<string[]>([""]);
   const [salesTarget, setSalesTarget] = useState("");
   const [collectionTarget, setCollectionTarget] = useState("");
-  const [newDealerPlan, setNewDealerPlan] = useState<string[]>([""]);
-  const [demoPlan, setDemoPlan] = useState<string[]>([""]);
-  const [farmerPlan, setFarmerPlan] = useState<string[]>([""]);
   const [openingOdometer, setOpeningOdometer] = useState("");
 
   useEffect(() => {
@@ -41,9 +38,6 @@ export default function DailyActivityPage() {
           setPlacesToVisit(d.activity.placesToVisit?.length ? d.activity.placesToVisit : [""]);
           setSalesTarget(String(d.activity.salesTarget ?? ""));
           setCollectionTarget(String(d.activity.collectionTarget ?? ""));
-          setNewDealerPlan(d.activity.newDealerAppointmentPlan?.length ? d.activity.newDealerAppointmentPlan : [""]);
-          setDemoPlan(d.activity.demonstrationPlan?.length ? d.activity.demonstrationPlan : [""]);
-          setFarmerPlan(d.activity.farmerMeetingPlan?.length ? d.activity.farmerMeetingPlan : [""]);
           setOpeningOdometer(d.activity.openingOdometer != null ? String(d.activity.openingOdometer) : "");
         }
         if (d?.closing) setClosed(true);
@@ -63,9 +57,6 @@ export default function DailyActivityPage() {
           placesToVisit,
           salesTarget: Number(salesTarget),
           collectionTarget: Number(collectionTarget),
-          newDealerAppointmentPlan: newDealerPlan,
-          demonstrationPlan: demoPlan,
-          farmerMeetingPlan: farmerPlan,
           openingOdometer: openingOdometer ? Number(openingOdometer) : null,
         }),
       });
@@ -185,9 +176,6 @@ export default function DailyActivityPage() {
                   onChange={(e) => setOpeningOdometer(e.target.value)}
                 />
               </div>
-              <ListEditor label="New dealer appointment plan" values={newDealerPlan} onChange={setNewDealerPlan} placeholder="Who / where" />
-              <ListEditor label="Demonstration plan" values={demoPlan} onChange={setDemoPlan} placeholder="Product demo details" />
-              <ListEditor label="Farmer meeting plan" values={farmerPlan} onChange={setFarmerPlan} placeholder="Meeting place / agenda" />
               <Button type="submit" size="lg" className="h-14 w-full text-lg" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                 Submit plan (locks DAR)

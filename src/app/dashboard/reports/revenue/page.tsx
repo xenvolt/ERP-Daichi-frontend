@@ -6,7 +6,7 @@ export default function RevenueReportPage() {
   return (
     <div className="space-y-6">
       <div>
-          <h1 className="text-3xl font-bold">Revenue Trends Report</h1>
+          <h1 className="text-2xl font-bold">Revenue Trends Report</h1>
           <p className="text-muted-foreground">Monthly and quarterly revenue analysis</p>
         </div>
       <Card>

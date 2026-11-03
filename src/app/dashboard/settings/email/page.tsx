@@ -70,7 +70,7 @@ export default function EmailSettingsPage() {
   return (
     <div className="max-w-xl space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Send report</h1>
+        <h1 className="text-2xl font-bold">Send report</h1>
         <p className="text-muted-foreground">Email a report to the founder</p>
       </div>
 

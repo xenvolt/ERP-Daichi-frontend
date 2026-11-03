@@ -75,7 +75,6 @@ const sidebar = [
   { href: "/dashboard/approvals", roles: ["MANAGEMENT_ADMIN"] },
   { href: "/dashboard/settings/users", roles: ["MANAGEMENT_ADMIN"] },
   { href: "/dashboard/settings/email", roles: ["MANAGEMENT_ADMIN"] },
-  { href: "/dashboard/settings", roles: ["MANAGEMENT_ADMIN"] },
 ];
 
 const quickActions: Record<string, string[]> = {
@@ -93,7 +92,6 @@ const quickActions: Record<string, string[]> = {
     "/dashboard/reports",
     "/dashboard/dealers",
     "/dashboard/orders",
-    "/dashboard/settings",
     "/dashboard/products",
     "/dashboard/reports/sales",
     "/dashboard/inventory",

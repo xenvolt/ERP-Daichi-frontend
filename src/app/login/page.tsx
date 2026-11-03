@@ -106,7 +106,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Welcome back</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Welcome back</h2>
             <p className="mt-2 text-slate-600">
               Sign in to your account to continue
             </p>

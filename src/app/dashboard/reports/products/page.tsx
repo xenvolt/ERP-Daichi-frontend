@@ -52,7 +52,7 @@ export default function ProductReportPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-            <h1 className="text-3xl font-bold">Product Analysis</h1>
+            <h1 className="text-2xl font-bold">Product Analysis</h1>
             <p className="text-muted-foreground">Top products by invoice revenue</p>
           </div>
         <Input

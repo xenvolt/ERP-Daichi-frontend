@@ -110,7 +110,7 @@ export default function FieldDailyReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Daily sales reports</h1>
+          <h1 className="text-2xl font-bold">Daily sales reports</h1>
           <p className="text-muted-foreground">Plan vs actual by salesperson and date. Historical archive is kept.</p>
         </div>
         <Button variant="outline" onClick={exportCsv} disabled={rows.length === 0}>

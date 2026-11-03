@@ -40,6 +40,16 @@
     @apply border-border;
   }
 
+  /* Slightly denser UI on desktop; everything is rem-based so it scales together. */
+  html {
+    font-size: 15px;
+  }
+  @media (max-width: 640px) {
+    html {
+      font-size: 16px;
+    }
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;

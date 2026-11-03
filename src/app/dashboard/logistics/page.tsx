@@ -197,7 +197,7 @@ export default function LogisticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Logistics & Dispatch</h1>
+        <h1 className="text-2xl font-bold">Logistics & Dispatch</h1>
         <p className="text-muted-foreground">
           Dispatch invoiced goods and track deliveries through to completion
         </p>

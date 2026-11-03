@@ -372,7 +372,7 @@ export default function InventoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Inventory</h1>
+        <h1 className="text-2xl font-bold">Inventory</h1>
         <p className="text-muted-foreground">
           Finished goods in base units (Nos / KG). Cases are Tally-style rounded display only.
         </p>
@@ -515,7 +515,8 @@ export default function InventoryPage() {
           <CardHeader>
             <CardTitle>Bulk upload</CardTitle>
             <CardDescription>
-              CSV/Excel with SKU and Quantity. Sets absolute base qty (ADJUSTMENT), not an inward add.
+              CSV/Excel with SKU (or product name) and Quantity columns. Tally stock exports work too. Sets
+              absolute base qty (ADJUSTMENT), not an inward add.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -539,6 +540,16 @@ export default function InventoryPage() {
                 <p>
                   Succeeded {uploadResult.rowsSucceeded} · Failed {uploadResult.rowsFailed}
                 </p>
+                {uploadResult.errors?.length > 0 && (
+                  <ul className="mt-2 max-h-40 space-y-0.5 overflow-y-auto rounded-md border bg-red-50 p-2 text-xs text-red-700">
+                    {uploadResult.errors.map((err, i) => (
+                      <li key={`${err.row}-${i}`}>
+                        Row {err.row}
+                        {err.sku ? ` (${err.sku})` : ""}: {err.error}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
           </CardContent>

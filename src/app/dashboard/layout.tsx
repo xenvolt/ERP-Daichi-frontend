@@ -62,11 +62,11 @@ export default function DashboardLayout({
 
   return (
     <NavProvider>
-      <div className="flex h-screen bg-muted/40 print:block print:h-auto print:bg-white">
+      <div className="flex h-screen h-dvh overflow-hidden bg-muted/40 print:block print:h-auto print:overflow-visible print:bg-white">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden print:block print:overflow-visible">
           <Header />
-          <main className="app-main flex-1 overflow-y-auto bg-gradient-to-b from-background to-muted/30 print:overflow-visible print:bg-white print:p-0">
+          <main className="app-main min-h-0 flex-1 overflow-y-auto overflow-x-hidden bg-gradient-to-b from-background to-muted/30 print:overflow-visible print:bg-white print:p-0">
             <div className="p-3 sm:p-4 md:p-6 print:p-0">
               <HeaderBackButton />
               {children}

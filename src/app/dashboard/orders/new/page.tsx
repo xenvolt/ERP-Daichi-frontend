@@ -263,7 +263,7 @@ export default function NewOrderPage() {
   return (
     <div className="space-y-6">
       <div>
-          <h1 className="text-3xl font-bold">New Order</h1>
+          <h1 className="text-2xl font-bold">New Order</h1>
           <p className="text-muted-foreground">Create a new order for a dealer</p>
         </div>
 

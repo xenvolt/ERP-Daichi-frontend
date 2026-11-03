@@ -224,7 +224,7 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
+          <h1 className="text-2xl font-bold">User Management</h1>
           <p className="text-muted-foreground">
             Create a login for Sales, Account, or Logistics. Each role only opens its own screens.
           </p>

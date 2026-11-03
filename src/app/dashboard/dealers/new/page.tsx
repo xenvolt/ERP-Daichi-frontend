@@ -118,18 +118,17 @@ export default function NewDealerPage() {
   return (
     <div className="space-y-6">
       <div>
-          <h1 className="text-3xl font-bold">New Dealer Registration</h1>
+          <h1 className="text-2xl font-bold">New Dealer Registration</h1>
           <p className="text-muted-foreground">
             Fill in dealer details to create a new registration
           </p>
         </div>
 
       <Tabs defaultValue="basic" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
           <TabsTrigger value="tax">Tax & Bank</TabsTrigger>
           <TabsTrigger value="business">Business Info</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -416,22 +415,6 @@ export default function NewDealerPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="documents">
-          <Card>
-            <CardHeader>
-              <CardTitle>Documents</CardTitle>
-              <CardDescription>Upload required documents (Coming Soon)</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                Document upload functionality will be available in the next update.
-                <br />
-                You can save the dealer as draft and upload documents later.
               </div>
             </CardContent>
           </Card>

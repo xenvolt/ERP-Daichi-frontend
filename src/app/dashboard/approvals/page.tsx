@@ -132,6 +132,7 @@ export default function ApprovalsPage() {
     open: false,
     dealer: null,
   });
+  const [approveAllOpen, setApproveAllOpen] = useState(false);
   const [creditLimit, setCreditLimit] = useState<string>("200000");
   const liveGrade = gradeFromCreditLimit(creditLimit);
   const [rejectReason, setRejectReason] = useState("");
@@ -235,6 +236,31 @@ export default function ApprovalsPage() {
     }
   };
 
+  const handleApproveAllDealers = async () => {
+    setActionLoading(true);
+    const limit = parseInt(creditLimit, 10) || 0;
+    const failed: string[] = [];
+    try {
+      for (const dealer of pendingDealers) {
+        const endpoint =
+          dealer.source === "daichi"
+            ? `/api/daichi-dealers/${dealer.id}/approve`
+            : `/api/dealers/${dealer.id}/approve`;
+        const res = await apiFetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ creditLimit: limit }),
+        }).catch(() => null);
+        if (!res?.ok) failed.push(dealer.firmName);
+      }
+      setApproveAllOpen(false);
+      if (failed.length) alert(`Could not approve ${failed.length} dealer(s): ${failed.join(", ")}`);
+      fetchPendingItems();
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleApproveOrder = async (id: string) => {
     setActionLoading(true);
     try {
@@ -328,7 +354,7 @@ export default function ApprovalsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Approvals</h1>
+        <h1 className="text-2xl font-bold">Approvals</h1>
         <p className="text-muted-foreground">
           Review dealer registrations, orders, and credit note requests
         </p>
@@ -380,11 +406,26 @@ export default function ApprovalsPage() {
 
         <TabsContent value="dealers">
           <Card>
-            <CardHeader>
-              <CardTitle>Pending Dealer Approvals</CardTitle>
-              <CardDescription>
-                Verify dealer details and assign credit limit grade (A–D)
-              </CardDescription>
+            <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
+              <div className="space-y-1.5">
+                <CardTitle>Pending Dealer Approvals</CardTitle>
+                <CardDescription>
+                  Verify dealer details and assign credit limit grade (A–D)
+                </CardDescription>
+              </div>
+              {pendingDealers.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setCreditLimit("200000");
+                    setApproveAllOpen(true);
+                  }}
+                  disabled={actionLoading}
+                >
+                  <CheckCircle className="mr-2 h-4 w-4" />
+                  Approve All ({pendingDealers.length})
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               {loading ? (
@@ -722,6 +763,39 @@ export default function ApprovalsPage() {
             <Button onClick={handleApproveDealer} disabled={actionLoading}>
               {actionLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Approve Dealer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={approveAllOpen} onOpenChange={setApproveAllOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Approve All Dealers</DialogTitle>
+            <DialogDescription>
+              Approve all {pendingDealers.length} pending dealers with the same credit limit.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 text-sm">
+            <div className="space-y-2">
+              <Label>Credit Limit (₹) *</Label>
+              <Input
+                type="number"
+                value={creditLimit}
+                onChange={(e) => setCreditLimit(e.target.value)}
+                min={0}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <GradeBadge grade={liveGrade} />
+              <span className="text-xs text-muted-foreground">Grade applied to every dealer</span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setApproveAllOpen(false)}>Cancel</Button>
+            <Button onClick={handleApproveAllDealers} disabled={actionLoading}>
+              {actionLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Approve All
             </Button>
           </DialogFooter>
         </DialogContent>
