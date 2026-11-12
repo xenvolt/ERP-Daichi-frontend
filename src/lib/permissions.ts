@@ -45,7 +45,7 @@ export function canGenerateInvoice(role?: string | null): boolean {
 }
 
 export function canViewInvoice(role?: string | null): boolean {
-  return role === "ACCOUNT" || role === "PRODUCTION_LOGISTICS";
+  return role === "ACCOUNT" || role === "PRODUCTION_LOGISTICS" || role === "SALES_MARKETING";
 }
 
 export function canManageInvoice(role?: string | null): boolean {
@@ -65,7 +65,8 @@ export function canCreateDebitNote(role?: string | null): boolean {
  * Prefer blocking whole modules; allow exceptions via `roleAllowedPrefixes`.
  */
 export const roleAllowedPrefixes: Record<string, string[]> = {
-  SALES_MARKETING: ["/dashboard/settings/profile", "/dashboard/unauthorized"],
+  // Sales gets read-only invoices (actions are gated by canManageInvoice).
+  SALES_MARKETING: ["/dashboard/settings/profile", "/dashboard/unauthorized", "/dashboard/finance/invoices"],
   PRODUCTION_LOGISTICS: ["/dashboard/settings/profile", "/dashboard/unauthorized"],
   ACCOUNT: ["/dashboard/settings/profile", "/dashboard/unauthorized"],
   MANAGEMENT_ADMIN: ["/dashboard/unauthorized"],
@@ -95,6 +96,7 @@ export const roleBlockedPrefixes: Record<string, string[]> = {
     "/dashboard/finance/payments",
     "/dashboard/finance/credit-notes",
     "/dashboard/finance/debit-notes",
+    "/dashboard/statements",
   ],
   ACCOUNT: [
     "/dashboard/field",

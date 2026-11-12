@@ -37,6 +37,7 @@ const pages = [
   "/dashboard/finance/credit-notes/new",
   "/dashboard/finance/debit-notes",
   "/dashboard/finance/debit-notes/new",
+  "/dashboard/statements",
   "/dashboard/reports",
   "/dashboard/reports/field",
   "/dashboard/reports/dealers",
@@ -66,7 +67,8 @@ const sidebar = [
   { href: "/dashboard/recommendations", roles: ["SALES_MARKETING"] },
   { href: "/dashboard/logistics", roles: ["PRODUCTION_LOGISTICS"] },
   { href: "/dashboard/inventory", roles: ["PRODUCTION_LOGISTICS", "MANAGEMENT_ADMIN"] },
-  { href: "/dashboard/finance/invoices", roles: ["PRODUCTION_LOGISTICS", "ACCOUNT"] },
+  { href: "/dashboard/finance/invoices", roles: ["PRODUCTION_LOGISTICS", "ACCOUNT", "SALES_MARKETING"] },
+  { href: "/dashboard/statements", roles: ["SALES_MARKETING", "ACCOUNT", "MANAGEMENT_ADMIN"] },
   { href: "/dashboard/finance/payments", roles: ["ACCOUNT"] },
   { href: "/dashboard/finance/credit-notes", roles: ["ACCOUNT"] },
   { href: "/dashboard/finance/debit-notes", roles: ["ACCOUNT"] },
@@ -120,9 +122,16 @@ describe("role route guards", () => {
   });
 
   it("blocks sales from finance, logistics, inventory, reports", () => {
-    for (const path of ["/dashboard/billing", "/dashboard/finance/invoices", "/dashboard/logistics", "/dashboard/inventory", "/dashboard/reports"]) {
+    for (const path of ["/dashboard/billing", "/dashboard/finance/payments", "/dashboard/finance/credit-notes", "/dashboard/logistics", "/dashboard/inventory", "/dashboard/reports"]) {
       assert.equal(isPathBlockedForRole(path, "SALES_MARKETING"), true, path);
     }
+  });
+
+  it("gives sales read-only invoices and dealer statements", () => {
+    for (const path of ["/dashboard/finance/invoices", "/dashboard/finance/invoices/abc", "/dashboard/statements"]) {
+      assert.equal(isPathBlockedForRole(path, "SALES_MARKETING"), false, path);
+    }
+    assert.equal(isPathBlockedForRole("/dashboard/statements", "PRODUCTION_LOGISTICS"), true);
   });
 
   it("blocks logistics from dealers, debit notes, and billing", () => {

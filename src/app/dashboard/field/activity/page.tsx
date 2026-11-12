@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { ListEditor } from "@/components/field/ListEditor";
+import { PhotoCaptureField } from "@/components/shared/PhotoCaptureField";
 import { dateKeyIST } from "@/lib/dates-ist";
 
 export default function DailyActivityPage() {
@@ -27,6 +28,7 @@ export default function DailyActivityPage() {
   const [salesTarget, setSalesTarget] = useState("");
   const [collectionTarget, setCollectionTarget] = useState("");
   const [openingOdometer, setOpeningOdometer] = useState("");
+  const [odometerPhoto, setOdometerPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     apiFetch("/api/daily-reports/today")
@@ -47,6 +49,10 @@ export default function DailyActivityPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!odometerPhoto) {
+      alert("Upload a photo of the opening odometer.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await apiFetch("/api/daily-reports/activity", {
@@ -58,6 +64,7 @@ export default function DailyActivityPage() {
           salesTarget: Number(salesTarget),
           collectionTarget: Number(collectionTarget),
           openingOdometer: openingOdometer ? Number(openingOdometer) : null,
+          openingOdometerPhoto: odometerPhoto,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -176,6 +183,14 @@ export default function DailyActivityPage() {
                   onChange={(e) => setOpeningOdometer(e.target.value)}
                 />
               </div>
+              <PhotoCaptureField
+                label="Opening odometer photo"
+                hint="Take a clear photo of the odometer reading"
+                value={odometerPhoto}
+                onChange={setOdometerPhoto}
+                required
+                maxDimension={1280}
+              />
               <Button type="submit" size="lg" className="h-14 w-full text-lg" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                 Submit plan (locks DAR)

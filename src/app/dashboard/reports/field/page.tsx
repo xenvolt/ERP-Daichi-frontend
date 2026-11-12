@@ -24,6 +24,7 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { Download } from "lucide-react";
 import { dateKeyIST } from "@/lib/dates-ist";
+import { OdometerPhotosButton } from "@/components/field/OdometerPhotosButton";
 
 type Row = {
   salespersonId: string;
@@ -43,6 +44,11 @@ type Row = {
   closingWithoutActivity: boolean;
   activitySubmittedAt: string | null;
   closingSubmittedAt: string | null;
+  report: {
+    id: string;
+    activity?: { openingOdometer?: number };
+    closing?: { closingOdometer?: number };
+  } | null;
 };
 
 export default function FieldDailyReportsPage() {
@@ -160,6 +166,7 @@ export default function FieldDailyReportsPage() {
                 <TableHead className="text-right">Collection plan / actual</TableHead>
                 <TableHead>Visits plan / actual</TableHead>
                 <TableHead>Flags</TableHead>
+                <TableHead>Odometer</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -189,6 +196,17 @@ export default function FieldDailyReportsPage() {
                     ]
                       .filter(Boolean)
                       .join(" · ") || "—"}
+                  </TableCell>
+                  <TableCell>
+                    {r.report?.id ? (
+                      <OdometerPhotosButton
+                        reportId={r.report.id}
+                        openingOdometer={r.report.activity?.openingOdometer}
+                        closingOdometer={r.report.closing?.closingOdometer}
+                      />
+                    ) : (
+                      "—"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

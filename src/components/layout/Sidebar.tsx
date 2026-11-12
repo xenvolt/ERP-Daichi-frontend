@@ -24,6 +24,7 @@ import {
   UserCog,
   FileSpreadsheet,
   Calculator,
+  BookOpen,
   X,
 } from "lucide-react";
 
@@ -37,7 +38,8 @@ const navigation = [
   { name: "Sales Promotion Activity", href: "/dashboard/recommendations", icon: Sprout, roles: ["SALES_MARKETING"] },
   { name: "Logistics", href: "/dashboard/logistics", icon: Truck, roles: ["PRODUCTION_LOGISTICS"] },
   { name: "Inventory", href: "/dashboard/inventory", icon: Warehouse, roles: ["PRODUCTION_LOGISTICS", "MANAGEMENT_ADMIN"] },
-  { name: "Invoices", href: "/dashboard/finance/invoices", icon: FileText, roles: ["PRODUCTION_LOGISTICS", "ACCOUNT"] },
+  { name: "Invoices", href: "/dashboard/finance/invoices", icon: FileText, roles: ["PRODUCTION_LOGISTICS", "ACCOUNT", "SALES_MARKETING"] },
+  { name: "Dealer Statement", href: "/dashboard/statements", icon: BookOpen, roles: ["SALES_MARKETING", "ACCOUNT", "MANAGEMENT_ADMIN"] },
   { name: "Payments", href: "/dashboard/finance/payments", icon: CreditCard, roles: ["ACCOUNT"] },
   { name: "Credit Notes", href: "/dashboard/finance/credit-notes", icon: Receipt, roles: ["ACCOUNT"] },
   { name: "Debit Notes", href: "/dashboard/finance/debit-notes", icon: Receipt, roles: ["ACCOUNT"] },

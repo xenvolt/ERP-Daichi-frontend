@@ -84,7 +84,7 @@ export default function LoginPage() {
             <h2 className="text-4xl font-bold leading-tight text-white drop-shadow-sm">
               Empowering Agriculture
               <br />
-              <span className="text-emerald-200">Across Maharashtra</span>
+              <span className="text-emerald-200">Through Technology</span>
             </h2>
             <p className="text-lg leading-relaxed text-white/90 drop-shadow-sm">
               Streamline your dealer network, manage orders, track logistics,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -47,6 +48,8 @@ interface Invoice {
 }
 
 export default function InvoicesPage() {
+  const { data: session } = useSession();
+  const isSales = session?.user?.role === "SALES_MARKETING";
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -147,7 +150,7 @@ export default function InvoicesPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="DRAFT">Draft</SelectItem>
+                {!isSales && <SelectItem value="DRAFT">Draft</SelectItem>}
                 <SelectItem value="SENT">Sent</SelectItem>
                 <SelectItem value="PARTIALLY_PAID">Partially Paid</SelectItem>
                 <SelectItem value="PAID">Paid</SelectItem>

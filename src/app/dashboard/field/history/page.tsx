@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/utils";
 import { apiFetchJsonArray } from "@/lib/api";
+import { OdometerPhotosButton } from "@/components/field/OdometerPhotosButton";
 
 const purposeLabels: Record<string, string> = {
   ORDER_FOLLOWUP: "Order follow-up",
@@ -104,6 +105,15 @@ export default function FieldHistoryPage() {
                         <p className="text-xs text-muted-foreground">Closed {formatDateTime(rep.closing.submittedAt)}</p>
                       )}
                     </div>
+                    {(rep.hasOpeningOdometerPhoto || rep.hasClosingOdometerPhoto || rep.activity?.openingOdometer != null) && (
+                      <div className="sm:col-span-2">
+                        <OdometerPhotosButton
+                          reportId={rep.id}
+                          openingOdometer={rep.activity?.openingOdometer}
+                          closingOdometer={rep.closing?.closingOdometer}
+                        />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))

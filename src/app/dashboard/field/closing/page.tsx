@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { ListEditor } from "@/components/field/ListEditor";
+import { PhotoCaptureField } from "@/components/shared/PhotoCaptureField";
 
 export default function DailyClosingPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function DailyClosingPage() {
   const [salesAchievement, setSalesAchievement] = useState("");
   const [collectionAchievement, setCollectionAchievement] = useState("");
   const [closingOdometer, setClosingOdometer] = useState("");
+  const [odometerPhoto, setOdometerPhoto] = useState<string | null>(null);
   const [dcrId, setDcrId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +47,10 @@ export default function DailyClosingPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!odometerPhoto) {
+      alert("Upload a photo of the closing odometer.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await apiFetch("/api/daily-reports/closing", {
@@ -52,6 +58,7 @@ export default function DailyClosingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           closingOdometer: Number(closingOdometer),
+          closingOdometerPhoto: odometerPhoto,
           placesVisited,
           salesAchievement: Number(salesAchievement),
           collectionAchievement: Number(collectionAchievement),
@@ -134,6 +141,14 @@ export default function DailyClosingPage() {
                   <p className="text-xs text-muted-foreground">Opening reading today: {openingOdometer}</p>
                 )}
               </div>
+              <PhotoCaptureField
+                label="Closing odometer photo"
+                hint="Take a clear photo of the odometer reading"
+                value={odometerPhoto}
+                onChange={setOdometerPhoto}
+                required
+                maxDimension={1280}
+              />
               <ListEditor label="Places visited *" values={placesVisited} onChange={setPlacesVisited} placeholder="Place visited" />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

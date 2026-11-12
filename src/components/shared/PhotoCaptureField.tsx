@@ -17,6 +17,26 @@ function readPhotoAsBase64(file: File): Promise<string> {
   });
 }
 
+/** Downscale to fit maxDimension and re-encode as JPEG, so uploads stay small. */
+function downscalePhoto(dataUrl: string, maxDimension: number): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxDimension / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return resolve(dataUrl);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.8));
+    };
+    // Formats the browser can't decode (e.g. HEIC on desktop) are sent as-is.
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 interface PhotoCaptureFieldProps {
   label: string;
   hint?: string;
@@ -24,6 +44,8 @@ interface PhotoCaptureFieldProps {
   onChange: (value: string | null) => void;
   required?: boolean;
   className?: string;
+  /** When set, photos are resized to fit this many pixels on the long side. */
+  maxDimension?: number;
 }
 
 export function PhotoCaptureField({
@@ -33,6 +55,7 @@ export function PhotoCaptureField({
   onChange,
   required = false,
   className,
+  maxDimension,
 }: PhotoCaptureFieldProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -52,7 +75,8 @@ export function PhotoCaptureField({
 
     processingRef.current = true;
     try {
-      onChange(await readPhotoAsBase64(file));
+      const dataUrl = await readPhotoAsBase64(file);
+      onChange(maxDimension ? await downscalePhoto(dataUrl, maxDimension) : dataUrl);
     } catch {
       alert("Could not read photo. Try again.");
     } finally {
